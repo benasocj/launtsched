@@ -43,6 +43,8 @@ r = s.get(BASE_URL + '/services')
 js_str = r'onclick="(un)?pauseService\((\d+)'
 try:
     serv_id = int(re.search(js_str, r.text).group(2))
+# ``ValueError`` in case ``int(...)`` fails
+# ``AttributeError`` in case ``re.search`` was unsuccessful
 except (AttributeError, ValueError):
     logging.error('could not find service ID')
     sys.exit()
