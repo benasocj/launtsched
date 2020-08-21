@@ -28,10 +28,22 @@ I run a free Compute Engine instance on Google Cloud Platform which runs on
 Linux. I use the ``at`` command to schedule the execution of the script at a
 certain time.
 
-For example, to pause my service at 23:55 I run the following::
+For example, to pause my service at 21:00 I run the following::
 
-  echo 'python3 launtel_change_service_status.py pause'|at 23:55
+  echo 'python3 launtel_change_service_status.py pause'|at 21:00
 
 Or to schedule an unpause for a future date::
 
   echo 'python3 launtel_change_service_status.py unpause'|at 00:05 2021-01-01
+
+Be kind and considerate to Launtel
+----------------------------------
+
+Knowing that NBN's turn around times can be fairly slow when pausing/unpausing a
+service, Launtel would still have to pay for an extra day if you pause your
+service at 11:59 pm but it only gets paused on NBN's side after midnight. Hence,
+if you know you'll be in bed by 9 pm then `love your neighbour as yourself
+<https://www.esv.org/mark12:31/>`__ and be kind to Launtel by scheduling the
+pausing of your service for that time in order to give Launtel a chance to still
+finish the pausing process within the same day so they don't have to pay the
+extra.
