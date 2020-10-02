@@ -10,14 +10,14 @@ USERNAME = 'foo@example.com'
 PASSWORD = 'foobar'
 BASE_URL = 'https://residential.launtel.net.au'
 
-def parse_args(args):
+def parse_args():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description='Pause or unpause a Launtel internet service.'
         )
     parser.add_argument(
         'action', metavar='action', help='must be `pause` or `unpause`')
-    return parser.parse_args(args)
+    return parser.parse_args()
 
 logging.basicConfig(
     format='%(asctime)s.%(msecs)03d %(levelname)8s %(message)s',
@@ -25,7 +25,7 @@ logging.basicConfig(
     level=logging.DEBUG,
     stream=sys.stdout)
 
-args = parse_args(sys.argv[1:])
+args = parse_args()
 s = requests.Session()
 s.headers = {'Accept-Encoding': 'gzip'}
 
