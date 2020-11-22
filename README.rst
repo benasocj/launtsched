@@ -1,6 +1,13 @@
 Launtsched
 ==========
 
+Warning
+-------
+
+As of 2020-11-22 Launtsched does not work anymore at the moment since Launtel's
+API has changed. I didn't have time yet to make the necessary changes but I'm
+happy for others to submit a pull request.
+
 What is this?
 -------------
 
