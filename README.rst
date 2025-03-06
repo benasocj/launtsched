@@ -13,13 +13,17 @@ in future this could potentially be done through a GUI too.
 How do I use this?
 ------------------
 
-* Configure the ``USERNAME`` and ``PASSWORD`` fields at the top of the script
-  with your Launtel login details.
-* Create a Python ``venv`` (virtual environment) and install the ``requests``
-  Python package inside it (I use Python's ``pip`` for the installation).
+* Rename the ``.env.example`` file to ``.env`` and fill in your Launtel username and password.
+* Create a Python ``venv`` (virtual environment) and install the requirements
+from ``requirements.txt`` using ``pip`` or similar.
 * Run the Python script with the ``pause`` or ``unpause`` argument, such as::
 
     python3 change_service_status.py pause
+
+* If you already know the id of the service you want to ``pause`` or ``unpause``,
+run the command like so::
+
+  python3 change_service_status.py pause --service_id 123456
 
 How do you schedule this?
 -------------------------
