@@ -16,14 +16,14 @@ How do I use this?
 * Rename the ``.env.example`` file to ``.env`` and fill in your Launtel username and password.
 * Create a Python ``venv`` (virtual environment) and install the requirements
 from ``requirements.txt`` using ``pip`` or similar.
-* Run the Python script with the ``pause`` or ``unpause`` argument, such as::
+* Run the Python script with the ``pause``, ``unpause`` or ``plan`` argument, such as::
 
     python3 change_service_status.py pause
 
-* If you already know the id of the service you want to ``pause`` or ``unpause``,
-run the command like so::
+* If you already know the id of the service you want to ``pause``, ``unpause``, or edit the ``plan`` for,
+an example command would look like so::
 
-  python3 change_service_status.py pause --service_id 123456
+  python3 change_service_status.py plan --service_id 123456
 
 How do you schedule this?
 -------------------------
