@@ -3,11 +3,16 @@ import argparse
 import logging
 import re
 import sys
+import os
 
+from dotenv import load_dotenv
 import requests
+from bs4 import BeautifulSoup
 
-USERNAME = "foo@example.com"
-PASSWORD = "foobar"
+load_dotenv()
+
+USERNAME = os.getenv("LAUNTEL_USERNAME")
+PASSWORD = os.getenv("LAUNTEL_PASSWORD")
 BASE_URL = "https://residential.launtel.net.au"
 
 
@@ -17,13 +22,20 @@ def parse_args():
         description="Pause or unpause a Launtel internet service.",
     )
     parser.add_argument("action", metavar="action", help="must be `pause` or `unpause`")
+    parser.add_argument(
+        "--service_id",
+        metavar="service_id",
+        help="must be an integer service id. you can see a list of your services by running this script without this argument.",
+        required=False,
+        type=int,
+    )
     return parser.parse_args()
 
 
 logging.basicConfig(
     format="%(asctime)s.%(msecs)03d %(levelname)8s %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
-    level=logging.DEBUG,
+    level=logging.INFO,
     stream=sys.stdout,
 )
 
@@ -41,17 +53,42 @@ if r.status_code != requests.codes.found:
     logging.error("login failed")
     sys.exit()
 
-logging.info("getting services")
-r = s.get(BASE_URL + "/services")
-js_str = r'onclick="(un)?pauseService\((\d+)'
-try:
-    serv_id = int(re.search(js_str, r.text).group(2))
-# ``ValueError`` in case ``int(...)`` fails
-# ``AttributeError`` in case ``re.search`` was unsuccessful
-except (AttributeError, ValueError):
-    logging.error("could not find service ID")
-    sys.exit()
-logging.info("service ID: %s", serv_id)
+serv_id = args.service_id
+if serv_id is None:
+    logging.info("getting services")
+    r = s.get(BASE_URL + "/services")
+
+    services = []
+
+    soup = BeautifulSoup(r.text, "html.parser")
+    service_cards = soup.find_all("div", class_="service-card")
+
+    for card in service_cards:
+        serv_title = card.find("span", class_="service-title-txt").text
+        pause_button = card.find(
+            "button", onclick=re.compile(r"(un)?pauseService\((\d+)")
+        )
+        if pause_button:
+            serv_id = int(re.search(r"\d+", pause_button["onclick"]).group())
+            services.append((serv_title, serv_id))
+
+    if not services:
+        logging.error("could not find any services that can be paused or unpaused")
+        sys.exit()
+
+    # If the account only has one service, proceed without asking which
+    # service to pause/unpause
+    if len(services) == 1:
+        logging.info(f"only one service detected - continuing to {args.action}")
+        serv_id = services[0][1]
+    else:
+        for service in services:
+            logging.INFO(service[0] + " - " + str(service[1]))
+        try:
+            serv_id = int(input("Enter the service ID to pause/unpause: "))
+        except:
+            logging.error("invalid service id entered. it must be an integer.")
+            sys.exit()
 
 if args.action == "pause":
     r = s.post("{}/service_pause/{}".format(BASE_URL, serv_id))
